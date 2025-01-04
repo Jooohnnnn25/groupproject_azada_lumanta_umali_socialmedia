@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            line-height: 1.6;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: row; /* Aligns the content in a row */
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Left Side with Background Image */
+        .left-side {
+            background-image: url('/picture.jpg');
+            background-size: cover;
+            background-position: center;
+            flex: 1;
+            height: 100%;
+        }
+
+        /* Right Side with Form or Profile Info */
+        .right-side {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .form-container, .profile-section, .edit-profile-form {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        /* Form Styles */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 5px rgba(0, 102, 204, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .profile-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .profile-section img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .profile-section h2 {
+            font-size: 26px;
+            color: #333;
+        }
+
+        .profile-section p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Edit Profile Form */
+        .edit-profile-form {
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-profile-form button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Left Side with Background Image -->
+        <div class="left-side"></div>
+
+        <!-- Right Side with Form or Profile Info -->
+        <div class="right-side">
+            <div id="userInfo" class="profile-section hidden">
+                <img src="https://i.pinimg.com/originals/4b/90/5b/4b905b1342b5635310923fd10319c265.jpg" alt="Profile Icon">
+                <h2>Welcome, <span id="userName"></span></h2>
+                <p>Email: <span id="userEmail"></span></p>
+                <p>Birth Date: <span id="userBirthDate"></span></p>
+                <p>Gender: <span id="userGender"></span></p>
+                <p>Address: <span id="userAddress"></span></p>
+                <button onclick="editProfile()">Edit Profile</button>
+                <button onclick="location.href='Home.htm'">Proceed</button>
+                <button onclick="logout()">Logout</button>
+            </div>
+
+            <div id="editProfileForm" class="edit-profile-form hidden">
+                <h2>Edit Profile</h2>
+                <form onsubmit="event.preventDefault(); updateProfile();">
+                    <input type="text" id="editFullName" placeholder="Full Name" required><br>
+                    <input type="email" id="editEmail" placeholder="Email" required><br>
+                    <input type="password" id="editPassword" placeholder="New Password"><br>
+                    <input type="text" id="editGender" placeholder="Gender" required><br>
+                    <input type="text" id="editAddress" placeholder="Address" required><br>
+                    <input type="date" id="editBirthDate" required><br>
+                    <button type="submit">Update Profile</button>
+                </form>
+                <button onclick="toggleForms('profile')">Back to Profile</button>
+            </div>
+
+            <div id="loginForm" class="form-container">
+                <h2>Login</h2>
+                <form onsubmit="event.preventDefault(); login();">
+                    <input type="email" id="loginEmail" placeholder="Email" required><br>
+                    <input type="password" id="loginPassword" placeholder="Password" required><br>
+                    <button type="submit">Login</button>
+                </form>
+                <button onclick="toggleForms('signup')">Sign Up</button>
+            </div>
+
+            <div id="profileForm" class="form-container hidden">
+                <h2>Create Account</h2>
+                <form onsubmit="event.preventDefault(); createUser();">
+                    <input type="text" id="fullName" placeholder="Full Name" required><br>
+                    <input type="email" id="email" placeholder="Email" required><br>
+                    <input type="password" id="password" placeholder="Password" required><br>
+                    <input type="text" id="gender" placeholder="Gender" required><br>
+                    <input type="text" id="address" placeholder="Address" required><br>
+                    <input type="date" id="birthDate" required><br>
+                    <button type="submit">Create</button>
+                </form>
+                <button onclick="toggleForms('login')">Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript functions remain the same
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('user', JSON.stringify(data));
+                displayProfile(data);
+                toggleForms('profile');
+                document.querySelector('form').reset();
+            } else {
+                const errorData = await response.json();
+                alert(`Login failed: ${errorData.message || 'Please check your credentials.'}`);
+            }
+        }
+
+        async function createUser() {
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const gender = document.getElementById('gender').value;
+            const address = document.getElementById('address').value;
+            const birthDate = document.getElementById('birthDate').value;
+
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fullName, email, password, gender, address, birthDate }),
+            });
+
+            if (response.ok) {
+                alert('Account created successfully!');
+                toggleForms('login');
+            } else {
+                alert('Account creation failed.');
+            }
+        }
+function editProfile() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+        // Pre-fill the form with current profile data
+        document.getElementById('editFullName').value = user.fullName || '';
+        document.getElementById('editEmail').value = user.email || '';
+        document.getElementById('editPassword').value = ''; // Allow the user to enter a new password
+        document.getElementById('editGender').value = user.gender || '';
+        document.getElementById('editAddress').value = user.address || '';
+        document.getElementById('editBirthDate').value = user.birthDate || '';
+
+        // Switch to the edit profile form
+        toggleForms('edit');
+    }
+}
+
+function toggleForms(formType) {
+    const loginForm = document.getElementById('loginForm');
+    const profileForm = document.getElementById('profileForm');
+    const profileSection = document.getElementById('userInfo');
+    const editProfileForm = document.getElementById('editProfileForm');
+    const signupForm = document.getElementById('profileForm');
+
+    // Hide all forms
+    loginForm.classList.add('hidden');
+    profileForm.classList.add('hidden');
+    profileSection.classList.add('hidden');
+    editProfileForm.classList.add('hidden');
+
+    // Show the selected form
+    if (formType === 'login') {
+        loginForm.classList.remove('hidden');
+    } else if (formType === 'profile') {
+        profileSection.classList.remove('hidden');
+    } else if (formType === 'signup') {
+        profileForm.classList.remove('hidden');
+    } else if (formType === 'edit') {
+        editProfileForm.classList.remove('hidden');
+    }
+}
+        async function updateProfile() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || !user.email) {
+                alert('User email is missing. Please log in again.');
+                toggleForms('login');
+                return;
+            }
+
+            const fullName = document.getElementById('editFullName').value;
+            const email = document.getElementById('editEmail').value;
+            const password = document.getElementById('editPassword').value;
+            const gender = document.getElementById('editGender').value;
+            const address = document.getElementById('editAddress').value;
+            const birthDate = document.getElementById('editBirthDate').value;
+
+            const response = await fetch(`/api/users/${user.email}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fullName, email, password, gender, address, birthDate }),
+            });
+
+            if (response.ok) {
+                const updatedUser = await response.json();
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                alert('Profile updated successfully!');
+                displayProfile(updatedUser);
+                toggleForms('profile');
+            } else {
+                alert('Profile update failed.');
+            }
+        }
+
+        function displayProfile(user) {
+            document.getElementById('userName').innerText = user.fullName;
+            document.getElementById('userEmail').innerText = user.email;
+            document.getElementById('userGender').innerText = user.gender;
+            document.getElementById('userAddress').innerText = user.address;
+            document.getElementById('userBirthDate').innerText = user.birthDate;
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            toggleForms('login');
+        }
+
+        function toggleForms(formType) {
+            const loginForm = document.getElementById('loginForm');
+            const profileForm = document.getElementById('profileForm');
+            const profileSection = document.getElementById('userInfo');
+            const editProfileForm = document.getElementById('editProfileForm');
+            const signupForm = document.getElementById('profileForm');
+
+            // Hide all forms
+            loginForm.classList.add('hidden');
+            profileForm.classList.add('hidden');
+            profileSection.classList.add('hidden');
+            editProfileForm.classList.add('hidden');
+
+            // Show the selected form
+            if (formType === 'login') {
+                loginForm.classList.remove('hidden');
+            } else if (formType === 'profile') {
+                profileSection.classList.remove('hidden');
+            } else if (formType === 'signup') {
+                profileForm.classList.remove('hidden');
+            } else if (formType === 'edit') {
+                editProfileForm.classList.remove('hidden');
+            }
+        }
+
+        window.onload = function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                displayProfile(user);
+                toggleForms('profile');
+            } else {
+                toggleForms('login');
+            }
+        }
+    </script>
+</body>
+</html>
